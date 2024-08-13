@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\Cart;
+use App\Models\Like;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
 {
@@ -23,7 +26,10 @@ class ProductController extends Controller
 
     public function show(Product $product)
     {
-        return view('products.show', compact('product'));
+        // Check if the user has liked this product
+        $liked = Auth::check() ? $product->likes()->where('user_id', Auth::id())->exists() : false;
+
+        return view('products.show', compact('product', 'liked'));
     }
 
     public function adminIndex()
@@ -82,5 +88,33 @@ class ProductController extends Controller
     {
         $product->delete();
         return redirect()->route('admin.products.index')->with('status', 'Product deleted successfully.');
+    }
+
+    // Like a product
+    public function like(Product $product)
+    {
+        $like = Like::firstOrNew([
+            'user_id' => Auth::id(),
+            'product_id' => $product->id,
+        ]);
+
+        if ($like->exists) {
+            $like->delete();
+            return back()->with('status', 'Product unliked successfully.');
+        } else {
+            $like->save();
+            return back()->with('status', 'Product liked successfully.');
+        }
+    }
+
+    // Add product to cart
+    public function addToCart(Product $product)
+    {
+        $cart = Cart::firstOrCreate([
+            'user_id' => Auth::id(),
+            'product_id' => $product->id,
+        ]);
+
+        return redirect()->route('cart.index')->with('status', 'Product added to cart successfully.');
     }
 }

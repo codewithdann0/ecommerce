@@ -44,4 +44,18 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+    // In app/Models/User.php
+
+public function likedProducts()
+{
+    return $this->belongsToMany(Product::class, 'product_likes');
+}
+// In app/Models/User.php
+
+public function cartItems()
+{
+    return $this->hasMany(Cart::class);
+}
+
+
 }

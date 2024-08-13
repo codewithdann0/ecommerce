@@ -23,7 +23,7 @@
                 <a href="/cart" class="text-lg text-blue-600 hover:text-blue-800 transition duration-200">Cart</a>
                 @auth
                     @if(Auth::user()->role === 'admin')
-                        <a href="{{ route('admin.products.index') }}" class="text-lg text-blue-600 hover:text-blue-800 transition duration-200">Admin</a>
+                        <a href="{{ route('admin.products.create') }}" class="text-lg text-blue-600 hover:text-blue-800 transition duration-200">Admin</a>
                     @endif
                     <div class="relative inline-block text-left dropdown">
                         <button class="text-lg text-blue-600 hover:text-blue-800 transition duration-200">
