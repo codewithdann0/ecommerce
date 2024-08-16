@@ -38,6 +38,9 @@
                     </form>
                 </div>
 
+                <!-- Display Number of Likes -->
+                <p class="text-gray-500 mt-2">Likes: {{ $product->likeCount() }}</p>
+
                 <a href="{{ route('products.show', $product) }}" class="text-blue-600 hover:underline mt-2 block">View Details</a>
             </div>
         @endforeach
