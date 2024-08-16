@@ -16,10 +16,12 @@ class ProductController extends Controller
         $search = $request->input('search');
 
         // Query products with optional search
-        $products = Product::when($search, function ($query) use ($search) {
-            return $query->where('name', 'like', '%' . $search . '%')
-                         ->orWhere('description', 'like', '%' . $search . '%');
-        })->get();
+        $products = Product::withCount('likes') // Eager load like count
+            ->when($search, function ($query) use ($search) {
+                return $query->where('name', 'like', '%' . $search . '%')
+                             ->orWhere('description', 'like', '%' . $search . '%');
+            })
+            ->get();
 
         return view('products.index', compact('products', 'search'));
     }
@@ -28,8 +30,10 @@ class ProductController extends Controller
     {
         // Check if the user has liked this product
         $liked = Auth::check() ? $product->likes()->where('user_id', Auth::id())->exists() : false;
+        // Count of likes for the product
+        $likeCount = $product->likes()->count();
 
-        return view('products.show', compact('product', 'liked'));
+        return view('products.show', compact('product', 'liked', 'likeCount'));
     }
 
     public function adminIndex()
