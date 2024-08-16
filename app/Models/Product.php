@@ -36,4 +36,9 @@ class Product extends Model
     {
         return $this->hasMany(Cart::class);
     }
+    public function likeCount()
+{
+    return $this->likes()->count();
+}
+
 }
